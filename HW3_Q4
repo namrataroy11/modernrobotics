@@ -1,0 +1,22 @@
+import numpy as np
+
+def is_rotation_matrix(matrix, tolerance=1e-5):
+    # Check if the matrix is square
+    if matrix.shape != (3, 3):
+        return False
+
+    # Check if the determinant is approximately 1
+    determinant = np.linalg.det(matrix)
+    if abs(determinant - 1.0) > tolerance:
+        return False
+
+    # Check if the transpose times itself is approximately the identity matrix
+    product = np.dot(matrix.T, matrix)
+    identity = np.identity(3)
+    if not np.allclose(product, identity, atol=tolerance):
+        return False
+    return True
+
+rotation_matrix = np.array([[1, 0, 0], [0, 0.999999, -0.001], [0, 0.001, 0.999999]])
+result = is_rotation_matrix(rotation_matrix)
+print(result)  
