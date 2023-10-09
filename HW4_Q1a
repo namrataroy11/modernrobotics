@@ -73,9 +73,9 @@ plot_3d_frame_with_offset(R_omega_theta_1, ax, [-1, 1, 0], ['m', 'y', 'c'], labe
 plot_3d_frame_with_offset(R_omega_theta_1, ax, [-2, 2, 0], ['m', 'y', 'c'], label='R_omega_theta_2')
 
 # Set the plot limits and labels
-ax.set_xlim(-2, 2)
-ax.set_ylim(-2, 2)
-ax.set_zlim(-1, 1)
+ax.set_xlim(-3, 3)
+ax.set_ylim(-3, 3)
+ax.set_zlim(-2, 2)
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
