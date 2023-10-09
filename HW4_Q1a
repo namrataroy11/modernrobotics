@@ -43,7 +43,7 @@ print("R_omega_theta_1: ",R_omega_theta_1)
 
 
 R_omega_theta_2 = np.array([
-    [np.cos(theta) + omega_hat_1_1**2 * (1 - np.cos(theta)), omega_hat_1_1*omega_hat_2*(1-np.cos(theta)) - omega_hat_3_1*np.sin(theta), omega_hat_1_1*omega_hat_3*(1-np.cos(theta)) + omega_hat_2*np.sin(theta)],
+    [np.cos(theta) + omega_hat_1_1**2 * (1 - np.cos(theta)), omega_hat_1_1*omega_hat_2*(1-np.cos(theta)) - omega_hat_3_1*np.sin(theta), omega_hat_1_1*omega_hat_3_1*(1-np.cos(theta)) + omega_hat_2*np.sin(theta)],
     [omega_hat_1_1*omega_hat_2*(1-np.cos(theta)) + omega_hat_3_1*np.sin(theta), np.cos(theta) + omega_hat_2**2 * (1 - np.cos(theta)), omega_hat_2*omega_hat_3_1*(1-np.cos(theta)) - omega_hat_1_1*np.sin(theta)],
     [omega_hat_1_1*omega_hat_3_1*(1-np.cos(theta)) - omega_hat_2*np.sin(theta), omega_hat_2*omega_hat_3_1*(1-np.cos(theta)) + omega_hat_1_1*np.sin(theta), np.cos(theta) + omega_hat_3_1**2 * (1 - np.cos(theta))]
 ])
@@ -70,7 +70,7 @@ plot_3d_frame_with_offset(np.eye(3), ax, [0, 0, 0], ['r', 'g', 'b'], label='s')
 plot_3d_frame_with_offset(R_omega_theta_1, ax, [-1, 1, 0], ['m', 'y', 'c'], label='R_omega_theta_1')
 
 # Plot the frame {a} with offset [-1, 1, 0]
-plot_3d_frame_with_offset(R_omega_theta_1, ax, [-2, 2, 0], ['m', 'y', 'c'], label='R_omega_theta_2')
+plot_3d_frame_with_offset(R_omega_theta_2, ax, [1, 2, 0], ['m', 'y', 'c'], label='R_omega_theta_2')
 
 # Set the plot limits and labels
 ax.set_xlim(-3, 3)
@@ -83,3 +83,4 @@ ax.legend(loc='upper left')
 
 plt.title("Visualization of Frames and Orientations with Offsets")
 plt.show()
+
