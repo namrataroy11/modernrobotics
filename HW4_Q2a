@@ -1,0 +1,74 @@
+import numpy as np
+
+# Define the rotation matrix R_sa
+R_sa = np.array([[0, 0, 1],
+                 [0, -1, 0],
+                 [1, 0, 0]])
+
+# Calculate the trace
+trace_value = np.trace(R_sa)
+
+# Calculate the angle theta
+theta = np.arccos((trace_value - 1) / 2.0)
+print("theta:", theta)
+
+#Calculate Omega_1
+omega_hat_1 = np.sqrt(1/2)
+print("omega_hat_1:",omega_hat_1)
+omega_hat_1_1=-omega_hat_1
+print("omega_hat_1_1:",omega_hat_1_1)
+
+#Calculate Omega_2
+omega_hat_2 = 0
+
+#Calculate Omega_3
+omega_hat_3 = np.sqrt(1/2)
+print("omega_hat_3:",omega_hat_3)
+omega_hat_3_1=-omega_hat_3
+print("omega_hat_3_1:",omega_hat_3_1)
+
+R_omega_hat_pos = np.array([[2*(omega_hat_1**2)-1, 2*omega_hat_1*omega_hat_2, 2*omega_hat_1*omega_hat_3],
+                 [2*omega_hat_1*omega_hat_2, 2*(omega_hat_2**2)-1, 2*omega_hat_2*omega_hat_3],
+                 [2*omega_hat_1*omega_hat_3, 2*omega_hat_2*omega_hat_3, 2*(omega_hat_3**2)-1]])
+
+print("R_omega_hat_pos:",R_omega_hat_pos)
+
+R_omega_hat_neg = np.array([[2*(omega_hat_1_1**2)-1, 2*omega_hat_1_1*omega_hat_2, 2*omega_hat_1_1*omega_hat_3_1],
+                 [2*omega_hat_1_1*omega_hat_2, 2*(omega_hat_2**2)-1, 2*omega_hat_2*omega_hat_3_1],
+                 [2*omega_hat_1_1*omega_hat_3_1, 2*omega_hat_2*omega_hat_3_1, 2*(omega_hat_3_1**2)-1]])
+
+print("R_omega_hat_neg:",R_omega_hat_neg)
+import matplotlib.pyplot as plt
+
+def plot_3d_frame_with_offset(matrix, ax, offset, color, label=''):
+    """Visualize the 3D frame described by the matrix with an offset."""
+    origin = np.array(offset)
+    x_axis, y_axis, z_axis = matrix[:, 0], matrix[:, 1], matrix[:, 2]
+    ax.quiver(*origin, *x_axis, color=color[0], label=f'X-{label}')
+    ax.quiver(*origin, *y_axis, color=color[1], label=f'Y-{label}')
+    ax.quiver(*origin, *z_axis, color=color[2], label=f'Z-{label}')
+
+# Set up the plot
+fig = plt.figure(figsize=(10, 10))
+ax = fig.add_subplot(111, projection='3d')
+
+# Plot the original frame {s} with offset [0, 0, 0]
+plot_3d_frame_with_offset(np.eye(3), ax, [0, 0, 0], ['r', 'g', 'b'], label='s')
+
+# Plot the frame {a} with offset [-1, 1, 0]
+plot_3d_frame_with_offset(R_omega_hat_neg, ax, [-1, 1, 0], ['m', 'y', 'c'], label='R_omega_hat_neg')
+
+# Plot the frame {a} with offset [-1, 1, 0]
+plot_3d_frame_with_offset(R_omega_hat_pos, ax, [1, 2, 0], ['m', 'y', 'c'], label='R_omega_hat_pos')
+
+# Set the plot limits and labels
+ax.set_xlim(-3, 3)
+ax.set_ylim(-3, 3)
+ax.set_zlim(-2, 2)
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.legend(loc='upper left')
+
+plt.title("Visualization of Frames and Orientations with Offsets")
+plt.show()
