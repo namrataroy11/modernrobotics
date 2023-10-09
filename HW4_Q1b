@@ -1,0 +1,55 @@
+import numpy as np
+
+# Exponential coordinates
+omega_theta = np.array([1, 2, 0])
+
+# Calculate the magnitude of the rotation (Euclidean norm)
+theta = np.linalg.norm(omega_theta)
+
+# Construct the skew-symmetric matrix normalized by the norm
+omega_hat_normalized = np.array([[0, -omega_theta[2]/theta, omega_theta[1]/theta],
+                                 [omega_theta[2]/theta, 0, -omega_theta[0]/theta],
+                                 [-omega_theta[1]/theta, omega_theta[0]/theta, 0]])
+
+# Calculate the matrix exponential
+R = np.eye(3) + np.sin(theta) * omega_hat_normalized + (1 - np.cos(theta)) * np.dot(omega_hat_normalized, omega_hat_normalized)
+
+# Print the rotation matrix R
+print("Rotation Matrix R:")
+print(R)
+
+
+import matplotlib.pyplot as plt
+
+def plot_3d_frame_with_offset(matrix, ax, offset, color, label=''):
+    """Visualize the 3D frame described by the matrix with an offset."""
+    origin = np.array(offset)
+    x_axis, y_axis, z_axis = matrix[:, 0], matrix[:, 1], matrix[:, 2]
+    ax.quiver(*origin, *x_axis, color=color[0], label=f'X-{label}')
+    ax.quiver(*origin, *y_axis, color=color[1], label=f'Y-{label}')
+    ax.quiver(*origin, *z_axis, color=color[2], label=f'Z-{label}')
+
+# Set up the plot
+fig = plt.figure(figsize=(10, 10))
+ax = fig.add_subplot(111, projection='3d')
+
+# Plot the original frame {s} with offset [0, 0, 0]
+plot_3d_frame_with_offset(np.eye(3), ax, [0, 0, 0], ['r', 'g', 'b'], label='s')
+
+# Plot the frame {a} with offset [-1, 1, 0]
+plot_3d_frame_with_offset(R, ax, [-1, 1, 0], ['m', 'y', 'c'], label='W_THETA')
+
+
+# Set the plot limits and labels
+ax.set_xlim(-2, 2)
+ax.set_ylim(-2, 2)
+ax.set_zlim(-1, 1)
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.legend(loc='upper left')
+
+plt.title("Visualization of Frames and Orientations with Offsets")
+plt.show()
+
+
