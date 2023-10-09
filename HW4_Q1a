@@ -1,0 +1,85 @@
+import numpy as np
+
+# Define the rotation matrix R_sa
+R_sa = np.array([[0, 0, 1],
+                 [0, 0, -1],
+                 [1, 0, 0]])
+
+# Calculate the trace
+trace_value = np.trace(R_sa)
+
+# Calculate the angle theta
+theta = np.arccos((trace_value - 1) / 2.0)
+print("theta:", theta)
+r_11 = R_sa[0, 0]
+r_22 = R_sa[1, 1]
+r_33 = R_sa[2, 2]
+
+# Calculate the omega1 
+omega_hat_1 = np.sqrt((r_11 - np.cos(theta)) / (1 - np.cos(theta)))
+print(omega_hat_1)
+omega_hat_1_1=-omega_hat_1
+print(omega_hat_1_1)
+
+# Calculate the omega2 
+omega_hat_2 = np.sqrt((r_22 - np.cos(theta)) / (1 - np.cos(theta)))
+print(omega_hat_1)
+omega_hat_2_1=-omega_hat_2
+print(omega_hat_2_1)
+
+# Calculate the omega1 and omega2
+omega_hat_3 = np.sqrt((r_33 - np.cos(theta)) / (1 - np.cos(theta)))
+print(omega_hat_3)
+omega_hat_3_1=-omega_hat_3
+print(omega_hat_3_1)
+
+# Define the rotation matrix R_sa
+R_omega_theta_1 = np.array([
+    [np.cos(theta) + omega_hat_1**2 * (1 - np.cos(theta)), omega_hat_1*omega_hat_2_1*(1-np.cos(theta)) - omega_hat_3*np.sin(theta), omega_hat_1*omega_hat_3*(1-np.cos(theta)) + omega_hat_2_1*np.sin(theta)],
+    [omega_hat_1*omega_hat_2_1*(1-np.cos(theta)) + omega_hat_3*np.sin(theta), np.cos(theta) + omega_hat_2_1**2 * (1 - np.cos(theta)), omega_hat_2_1*omega_hat_3*(1-np.cos(theta)) - omega_hat_1*np.sin(theta)],
+    [omega_hat_1*omega_hat_3*(1-np.cos(theta)) - omega_hat_2_1*np.sin(theta), omega_hat_2_1*omega_hat_3*(1-np.cos(theta)) + omega_hat_1*np.sin(theta), np.cos(theta) + omega_hat_3**2 * (1 - np.cos(theta))]
+])
+print("R_omega_theta_1: ",R_omega_theta_1)
+
+
+R_omega_theta_2 = np.array([
+    [np.cos(theta) + omega_hat_1_1**2 * (1 - np.cos(theta)), omega_hat_1_1*omega_hat_2*(1-np.cos(theta)) - omega_hat_3_1*np.sin(theta), omega_hat_1_1*omega_hat_3*(1-np.cos(theta)) + omega_hat_2*np.sin(theta)],
+    [omega_hat_1_1*omega_hat_2*(1-np.cos(theta)) + omega_hat_3_1*np.sin(theta), np.cos(theta) + omega_hat_2**2 * (1 - np.cos(theta)), omega_hat_2*omega_hat_3_1*(1-np.cos(theta)) - omega_hat_1_1*np.sin(theta)],
+    [omega_hat_1_1*omega_hat_3_1*(1-np.cos(theta)) - omega_hat_2*np.sin(theta), omega_hat_2*omega_hat_3_1*(1-np.cos(theta)) + omega_hat_1_1*np.sin(theta), np.cos(theta) + omega_hat_3_1**2 * (1 - np.cos(theta))]
+])
+print("R_omega_theta_2: ",R_omega_theta_2)
+
+import matplotlib.pyplot as plt
+
+def plot_3d_frame_with_offset(matrix, ax, offset, color, label=''):
+    """Visualize the 3D frame described by the matrix with an offset."""
+    origin = np.array(offset)
+    x_axis, y_axis, z_axis = matrix[:, 0], matrix[:, 1], matrix[:, 2]
+    ax.quiver(*origin, *x_axis, color=color[0], label=f'X-{label}')
+    ax.quiver(*origin, *y_axis, color=color[1], label=f'Y-{label}')
+    ax.quiver(*origin, *z_axis, color=color[2], label=f'Z-{label}')
+
+# Set up the plot
+fig = plt.figure(figsize=(10, 10))
+ax = fig.add_subplot(111, projection='3d')
+
+# Plot the original frame {s} with offset [0, 0, 0]
+plot_3d_frame_with_offset(np.eye(3), ax, [0, 0, 0], ['r', 'g', 'b'], label='s')
+
+# Plot the frame {a} with offset [-1, 1, 0]
+plot_3d_frame_with_offset(R_omega_theta_1, ax, [-1, 1, 0], ['m', 'y', 'c'], label='R_omega_theta_1')
+
+# Plot the frame {a} with offset [-1, 1, 0]
+plot_3d_frame_with_offset(R_omega_theta_1, ax, [-2, 2, 0], ['m', 'y', 'c'], label='R_omega_theta_2')
+
+# Set the plot limits and labels
+ax.set_xlim(-2, 2)
+ax.set_ylim(-2, 2)
+ax.set_zlim(-1, 1)
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.legend(loc='upper left')
+
+plt.title("Visualization of Frames and Orientations with Offsets")
+plt.show()
