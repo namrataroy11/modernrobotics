@@ -42,10 +42,6 @@ for i=1:max_iteration
 
     zero_matrix = zeros(3);
     
-    % Define T_bs as specified
-    T_bs = [R, -R_inv*p;
-            0 0 0 1];
-    
     % Construct the adjoint matrix Ad_T_bs
     Ad_T_bs = [R, zero_matrix;           
                p_bracket*R, R];
@@ -65,20 +61,21 @@ for i=1:max_iteration
     %Define pseudo-inverse of Body Jacobian
     J_b_pseudo_inverse = pinv(J_b);
     
-    % Define twist bracket, Nu bracket
-    Vb_bracket = logm(T_inv_sb * T_sd); 
+    % Define twist bracket
+    Vb_bracket = logm(T_bs * T_sd); 
     
-    %Extract Angular Velocity,from Nu bracket
-    wb_bracket = Vb_bracket(1:3, 1:3); 
-    wb_x = wb_bracket(3, 2);
-    wb_y = wb_bracket(1, 3);
-    wb_z = wb_bracket(2, 1);
-    wb = [wb_x; wb_y; wb_z];
-    
-    %Extract Linear Velocity from Nu bracket
-    vb = Vb_bracket(1:3, 4);
-    Vb = [wb; vb];
-    
+    %Extract Angular Velocity from skew-symmetry 
+    Vb_rotational = [Vb_bracket(3, 2); % Rotational x
+                     Vb_bracket(1, 3); % Rotational y
+                     Vb_bracket(2, 1)]; % Rotational z
+    %Define Translation Velocity
+    Vb_translational = [Vb_bracket(1, 4); % Translation x
+                     Vb_bracket(2, 4); % Translation y
+                     Vb_bracket(3, 4)]; % Translation z
+
+    %Define Velocity Matrix
+    Vb = [Vb_rotational; Vb_translational]; % Translation z
+
     %Update the joint angles
     q_new = q+(J_b_pseudo_inverse*Vb);
 
